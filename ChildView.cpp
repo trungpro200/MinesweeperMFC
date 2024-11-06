@@ -15,7 +15,7 @@
 
 CChildView::CChildView()
 {
-	spriteSheet.setSize(16, 16);
+	spriteSheet.setSize(32, 32);
 }
 
 CChildView::~CChildView()
@@ -48,6 +48,6 @@ void CChildView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	
-	spriteSheet.blit(dc, 0, 0);
+	spriteSheet.getSprite(7, 1)->blit(dc, 0, 0);
 }
 
