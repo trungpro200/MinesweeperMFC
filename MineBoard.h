@@ -25,7 +25,7 @@ public:
 	int** tilesState; 
 	
 	CPoint pos;
-	CPoint sel;
+	CPoint sel; //current selected tile
 
 	MineBoard(int size);
 	~MineBoard();
@@ -37,8 +37,10 @@ public:
 
 	void draw(CPaintDC& dc);
 
+	//Mouse util
 	void clickDown(CPoint point);
 	void clickUp(CPoint point);
+	void mouseMove(CPoint point);
 
 	//return pos of clicked grid of the board, return (-1,-1) if out of bound
 	CPoint screenToBoard(CPoint screenPos); 

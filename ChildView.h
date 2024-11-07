@@ -16,7 +16,7 @@ public:
 // Attributes
 public:
 	MineBoard game;
-	CPoint p1;
+	bool holdingL; //Whether LButton is down or not
 // Operations
 public:
 

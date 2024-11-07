@@ -84,6 +84,7 @@ void MineBoard::setPos(int x, int y)
 
 void MineBoard::generateBombs(double rate)
 {
+	srand(time(NULL)); //Seeding
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			double f = (double) rand() / RAND_MAX;
@@ -96,23 +97,49 @@ void MineBoard::draw(CPaintDC& dc)
 {
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
-			drawTile(dc, board[i][j], j, i);
+			drawTile(dc, tilesState[i][j], j, i);
 			//TRACE("%i\t", board[i][j]);
 		}
 		//TRACE("\n");
 	}
 }
 
+//Select only
 void MineBoard::clickDown(CPoint point)
 {
 	CPoint clk = screenToBoard(point);
 
 	if (clk.x == -1)
 		return;
+	if (getState(clk) != UNKNOWN_TILE)
+		return;
 
 	sel = clk;
 	
 	setState(sel, SELECTED_TILE);
+}
+
+//Comfirm sweeping
+void MineBoard::clickUp(CPoint point)
+{
+	sel = CPoint(-1, -1);
+}
+
+void MineBoard::mouseMove(CPoint point)
+{
+	CPoint nPos = screenToBoard(point);
+
+	if (nPos == sel)
+		return;
+
+	if (nPos.x == -1) {
+		setState(sel, UNKNOWN_TILE);
+		return;
+	}
+
+	setState(sel, UNKNOWN_TILE);
+	setState(nPos, SELECTED_TILE);
+	sel = nPos;
 }
 
 CPoint MineBoard::screenToBoard(CPoint screenPos)
@@ -141,5 +168,7 @@ int MineBoard::getState(CPoint pt) const
 
 void MineBoard::setState(CPoint pt, int state)
 {
+	if (pt.x == -1)
+		return;
 	tilesState[pt.y][pt.x] = state;
 }

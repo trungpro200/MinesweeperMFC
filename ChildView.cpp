@@ -16,7 +16,8 @@
 CChildView::CChildView() : game(16)
 {
 	game.spritesSheet.setSize(24, 24);
-	game.setPos(300, 0);
+	game.setPos(300, 50);
+	holdingL = false;
 }
 
 CChildView::~CChildView()
@@ -66,7 +67,7 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	game.clickDown(point);
-
+	holdingL = true;
 
 	Invalidate(0);
 	CWnd::OnLButtonDown(nFlags, point);
@@ -76,9 +77,9 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	p1.x = -1;
-	p1.y = -1;
+	holdingL = false;
 
+	game.clickUp(point);
 	CWnd::OnLButtonUp(nFlags, point);
 }
 
@@ -86,10 +87,10 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (p1.x == -1) {
+	if (!holdingL) {
 		return;
 	}
-	p1 += point;
-
+	game.mouseMove(point);
+	Invalidate(0);
 	CWnd::OnMouseMove(nFlags, point);
 }
