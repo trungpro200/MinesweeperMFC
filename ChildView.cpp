@@ -16,7 +16,7 @@
 CChildView::CChildView() : game(16)
 {
 	game.spritesSheet.setSize(24, 24);
-	game.setPos(300, 50);
+	game.setPos(300, 30);
 	holdingL = false;
 }
 
@@ -80,6 +80,7 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 	holdingL = false;
 
 	game.clickUp(point);
+	Invalidate(0);
 	CWnd::OnLButtonUp(nFlags, point);
 }
 

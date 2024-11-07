@@ -3,33 +3,33 @@
 
 void MineBoard::createBoard()
 {
-	if (board != nullptr)
+	if (tiles != nullptr)
 		deleteBoard();
 
-	board = new bool* [size];
-	tilesState = new int* [size];
-	for (int i = 0; i < size; i++) {
-		board[i] = new bool[size];
-		tilesState[i] = new int[size];
+	tiles = new Tile * [size];
 
-		std::fill(tilesState[i], tilesState[i] + size, UNKNOWN_TILE);
+	for (int i = 0; i < size; i++) {
+		tiles[i] = new Tile[size];
 	}
 
 	//Randomize
 	generateBombs(0.2f);
+	//Calc gradients
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++) {
+			calcGradient(CPoint(i, j));
+		}
 }
 
 void MineBoard::deleteBoard()
 {
-	if (board == nullptr)
+	if (tiles == nullptr)
 		return;
 
 	for (int i = 0; i < size; i++) {
-		delete[] board[i];
-		delete[] tilesState[i];
+		delete[] tiles[i];
 	}
-	delete[] board;
-	delete[] tilesState;
+	delete[] tiles;
 }
 
 void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
@@ -66,8 +66,8 @@ void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
 MineBoard::MineBoard(int size)
 {
 	this->size = size;
-	board = nullptr;
-	tilesState = nullptr;
+	finished = false;
+	tiles = nullptr;
 	createBoard();
 }
 
@@ -88,16 +88,31 @@ void MineBoard::generateBombs(double rate)
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			double f = (double) rand() / RAND_MAX;
-			board[i][j] = f < rate;
+			tiles[i][j].haveBomb = f < rate;
 		}
 	}
+}
+
+void MineBoard::calcGradient(CPoint pos) 
+{
+	if (pos.x == -1)
+		return;
+
+	std::vector<Tile*> neighbour = getNeighbour(pos);
+	int S = 0;
+
+	for (Tile* a : neighbour) {
+		S += a->haveBomb;
+	}
+
+	tiles[pos.y][pos.x].gradient = S;
 }
 
 void MineBoard::draw(CPaintDC& dc)
 {
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
-			drawTile(dc, tilesState[i][j], j, i);
+			drawTile(dc, tiles[i][j].state, j, i);
 			//TRACE("%i\t", board[i][j]);
 		}
 		//TRACE("\n");
@@ -107,12 +122,15 @@ void MineBoard::draw(CPaintDC& dc)
 //Select only
 void MineBoard::clickDown(CPoint point)
 {
+	if (finished) return;
 	CPoint clk = screenToBoard(point);
 
 	if (clk.x == -1)
 		return;
 	if (getState(clk) != UNKNOWN_TILE)
 		return;
+
+	getNeighbour(clk);
 
 	sel = clk;
 	
@@ -122,17 +140,25 @@ void MineBoard::clickDown(CPoint point)
 //Comfirm sweeping
 void MineBoard::clickUp(CPoint point)
 {
+	if (finished) return;
+
+	if (getState(sel) == SELECTED_TILE) {
+		openTile(sel);
+		TRACE("%i\n", getTile(sel).gradient);
+	}
 	sel = CPoint(-1, -1);
 }
 
 void MineBoard::mouseMove(CPoint point)
 {
+	if (finished) return;
+
 	CPoint nPos = screenToBoard(point);
 
 	if (nPos == sel)
 		return;
 
-	if (nPos.x == -1) {
+	if (nPos.x == -1 || getState(nPos) != UNKNOWN_TILE) {
 		setState(sel, UNKNOWN_TILE);
 		return;
 	}
@@ -140,6 +166,11 @@ void MineBoard::mouseMove(CPoint point)
 	setState(sel, UNKNOWN_TILE);
 	setState(nPos, SELECTED_TILE);
 	sel = nPos;
+}
+
+void MineBoard::openTile(CPoint pos)
+{
+	setState(pos, NOBOMB_TILE);
 }
 
 CPoint MineBoard::screenToBoard(CPoint screenPos)
@@ -156,19 +187,56 @@ CPoint MineBoard::screenToBoard(CPoint screenPos)
 		return CPoint(-1, -1);
 	}
 
-	TRACE("%i, %i\n", ret.x, ret.y);
+	//TRACE("%i, %i\n", ret.x, ret.y);
 
 	return ret;
 }
 
 int MineBoard::getState(CPoint pt) const
 {
-	return tilesState[pt.y][pt.x];
+	if (pt.x == -1) {
+		return ERRORTYPE;
+	}
+	return tiles[pt.y][pt.x].state;
 }
 
 void MineBoard::setState(CPoint pt, int state)
 {
 	if (pt.x == -1)
 		return;
-	tilesState[pt.y][pt.x] = state;
+	tiles[pt.y][pt.x].state = state;
+}
+
+Tile& MineBoard::getTile(CPoint pt)
+{
+	// TODO: insert return statement here
+	return tiles[pt.y][pt.x];
+}
+
+std::vector<Tile*> MineBoard::getNeighbour(
+	CPoint pos //Center pos
+)
+{
+	if (pos.x == -1) {
+		return std::vector<Tile*>();
+	}
+
+	std::vector<Tile*> neighbour;
+	
+	for (int i = -1; i <= 1; i++)
+		for (int j = -1; j <= 1; j++) {
+			if (i == 0 && j == 0)
+				continue;
+
+			int x = pos.x + i;
+			int y = pos.y + j;
+
+			if (x < 0 || y < 0)
+				continue;
+			if (x >= size || y >= size)
+				continue;
+
+			neighbour.push_back(&tiles[y][x]);
+		}
+	return neighbour;
 }

@@ -2,14 +2,21 @@
 #include "SpritesSheet.h"
 #include <algorithm>
 #include <atltypes.h>
+#include <vector>
 
 #define NOBOMB_TILE 0
 #define UNKNOWN_TILE -1
 #define BOMB_TILE -2
 #define EXPLODED_TILE -3
 #define SELECTED_TILE -4
+#define ERRORTYPE -5
 
 //The remain is for surrounded by n-bomb cases//
+struct Tile {
+	bool haveBomb = 0;
+	int state = UNKNOWN_TILE;
+	int gradient = 8; //Number of bomb surround this tile (0-8)
+};
 
 class MineBoard
 {
@@ -21,11 +28,12 @@ public:
 	SpritesSheet spritesSheet;
 	
 	int size; //Size of the game eg: 16x16
-	bool** board; //Store which tile has bomb
-	int** tilesState; 
+	Tile** tiles;
 	
 	CPoint pos;
 	CPoint sel; //current selected tile
+
+	bool finished;//Gamestate
 
 	MineBoard(int size);
 	~MineBoard();
@@ -34,6 +42,8 @@ public:
 
 	//rate 0-1, 0 mean no bomb, 1 mean all tiles have bomb :skull:
 	void generateBombs(double rate); 
+	//Calculate the number of bomb surround a tile at pos
+	void calcGradient(CPoint pos);
 
 	void draw(CPaintDC& dc);
 
@@ -42,11 +52,20 @@ public:
 	void clickUp(CPoint point);
 	void mouseMove(CPoint point);
 
+	//Open up tile at x, y pos
+	void openTile(CPoint pos);
+
 	//return pos of clicked grid of the board, return (-1,-1) if out of bound
 	CPoint screenToBoard(CPoint screenPos); 
 
 	//return state of a tile at pos x, y
 	int getState(CPoint pt) const;
 	void setState(CPoint pt, int state);
+	
+	//The name tell the behavior :/
+	Tile& getTile(CPoint pt);
+	
+	//Moore Neighbour
+	std::vector<Tile*> getNeighbour(CPoint pos);
 };
 
