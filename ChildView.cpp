@@ -13,9 +13,10 @@
 
 // CChildView
 
-CChildView::CChildView()
+CChildView::CChildView() : game(16)
 {
-	spriteSheet.setSize(32, 32);
+	game.spritesSheet.setSize(32, 32);
+	game.setPos(0, 0);
 }
 
 CChildView::~CChildView()
@@ -48,6 +49,6 @@ void CChildView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	
-	spriteSheet.getSprite(7, 1)->blit(dc, 0, 0);
+	game.draw(dc);
 }
 

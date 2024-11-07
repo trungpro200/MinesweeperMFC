@@ -1,9 +1,8 @@
 
 // ChildView.h : interface of the CChildView class
 //
-#include "SpritesSheet.h"
-
 #pragma once
+#include "MineBoard.h"
 
 
 // CChildView window
@@ -16,7 +15,7 @@ public:
 
 // Attributes
 public:
-	SpritesSheet spriteSheet;
+	MineBoard game;
 // Operations
 public:
 

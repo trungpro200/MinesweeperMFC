@@ -4,10 +4,10 @@
 class SpritesSheet : public Sprite
 {
 private:
-	int spriteHeight, spriteWidth;
 	int row, col;
 	Sprite** sprites;
 public:
+	int spriteHeight, spriteWidth;
 	SpritesSheet();
 	SpritesSheet(LPCTSTR src);
 	~SpritesSheet();
