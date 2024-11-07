@@ -6,16 +6,17 @@ void MineBoard::createBoard()
 	if (board != nullptr)
 		deleteBoard();
 
-	board = new int* [size];
+	board = new bool* [size];
 	tilesState = new int* [size];
 	for (int i = 0; i < size; i++) {
-		board[i] = new int[size];
+		board[i] = new bool[size];
 		tilesState[i] = new int[size];
 
 		std::fill(tilesState[i], tilesState[i] + size, UNKNOWN_TILE);
 	}
 
 	//Randomize
+	generateBombs(0.2f);
 }
 
 void MineBoard::deleteBoard()
@@ -43,8 +44,18 @@ void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
 	case SELECTED_TILE:
 		tile = spritesSheet.getSprite(1, 0);
 		break;
+	case NOBOMB_TILE:
+		tile = spritesSheet.getSprite(1, 0);
+		break;
+	case EXPLODED_TILE:
+		tile = spritesSheet.getSprite(6, 0);
+		break;
+	case BOMB_TILE:
+		tile = spritesSheet.getSprite(5, 0);
+		break;
 	default:
-		return;
+		tile = spritesSheet.getSprite(STATE-1, 1);
+		break;
 	}
 
 	//TRACE("%i, %i\n", origin.x, origin.y);
@@ -71,12 +82,22 @@ void MineBoard::setPos(int x, int y)
 	pos.y = y;
 }
 
+void MineBoard::generateBombs(double rate)
+{
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			double f = (double) rand() / RAND_MAX;
+			board[i][j] = f < rate;
+		}
+	}
+}
+
 void MineBoard::draw(CPaintDC& dc)
 {
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
-			drawTile(dc, tilesState[i][j], j, i);
-			//TRACE("%i\n", tilesState[i][j]);
+			drawTile(dc, board[i][j], j, i);
+			//TRACE("%i\t", board[i][j]);
 		}
 		//TRACE("\n");
 	}

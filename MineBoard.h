@@ -21,8 +21,8 @@ public:
 	SpritesSheet spritesSheet;
 	
 	int size; //Size of the game eg: 16x16
-	int** board;
-	int** tilesState;
+	bool** board; //Store which tile has bomb
+	int** tilesState; 
 	
 	CPoint pos;
 	CPoint sel;
