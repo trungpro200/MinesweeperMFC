@@ -10,12 +10,14 @@
 #define EXPLODED_TILE -3
 #define SELECTED_TILE -4
 #define ERRORTYPE -5
+#define FLAGGED -6
 
 //The remain is for surrounded by n-bomb cases//
 struct Tile {
 	bool haveBomb = 0;
 	int state = UNKNOWN_TILE;
 	int gradient = 8; //Number of bomb surround this tile (0-8)
+	CPoint pos;
 };
 
 class MineBoard
@@ -42,7 +44,9 @@ public:
 
 	//rate 0-1, 0 mean no bomb, 1 mean all tiles have bomb :skull:
 	void generateBombs(double rate); 
+
 	//Calculate the number of bomb surround a tile at pos
+	//Also assign the pos of the tile
 	void calcGradient(CPoint pos);
 
 	void draw(CPaintDC& dc);

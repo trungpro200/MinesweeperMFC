@@ -13,7 +13,7 @@ void MineBoard::createBoard()
 	}
 
 	//Randomize
-	generateBombs(0.2f);
+	generateBombs(0.1f);
 	//Calc gradients
 	for (int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++) {
@@ -98,6 +98,8 @@ void MineBoard::calcGradient(CPoint pos)
 	if (pos.x == -1)
 		return;
 
+	getTile(pos).pos = pos;
+
 	std::vector<Tile*> neighbour = getNeighbour(pos);
 	int S = 0;
 
@@ -143,8 +145,9 @@ void MineBoard::clickUp(CPoint point)
 	if (finished) return;
 
 	if (getState(sel) == SELECTED_TILE) {
+		setState(sel, UNKNOWN_TILE);
 		openTile(sel);
-		TRACE("%i\n", getTile(sel).gradient);
+		//TRACE("%i\n", getTile(sel).gradient);
 	}
 	sel = CPoint(-1, -1);
 }
@@ -170,7 +173,25 @@ void MineBoard::mouseMove(CPoint point)
 
 void MineBoard::openTile(CPoint pos)
 {
-	setState(pos, NOBOMB_TILE);
+	Tile& tile = getTile(pos);
+
+	if (tile.state != UNKNOWN_TILE)
+		return;
+
+	if (tile.haveBomb) {
+		finished = true;
+		tile.state = EXPLODED_TILE;
+		return;
+	}
+	//No bomb
+	tile.state = tile.gradient;
+
+	if (tile.gradient == 0) {
+		for (auto t : getNeighbour(pos)) {
+			openTile(t->pos);
+		}
+	}
+
 }
 
 CPoint MineBoard::screenToBoard(CPoint screenPos)
