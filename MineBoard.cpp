@@ -47,6 +47,9 @@ void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
 	case NOBOMB_TILE:
 		tile = spritesSheet.getSprite(1, 0);
 		break;
+	case FLAGGED:
+		tile = spritesSheet.getSprite(2, 0);
+		break;
 	case EXPLODED_TILE:
 		tile = spritesSheet.getSprite(6, 0);
 		break;
@@ -68,6 +71,11 @@ MineBoard::MineBoard(int size)
 	this->size = size;
 	finished = false;
 	tiles = nullptr;
+	spritesSheet.setSize(24, 24);
+
+	width = spritesSheet.spriteWidth * size;
+	height = spritesSheet.spriteHeight * size;
+
 	createBoard();
 }
 
@@ -169,6 +177,29 @@ void MineBoard::mouseMove(CPoint point)
 	setState(sel, UNKNOWN_TILE);
 	setState(nPos, SELECTED_TILE);
 	sel = nPos;
+}
+
+void MineBoard::rightClick(CPoint point)
+{
+	CPoint p = screenToBoard(point);
+
+	if (p.x == -1) {
+		return;
+	}
+
+	flagTile(p);
+}
+
+void MineBoard::flagTile(CPoint pos)
+{
+	if (getState(pos) == UNKNOWN_TILE) {
+		setState(pos, FLAGGED);
+		return;
+	}
+	if (getState(pos) == FLAGGED) {
+		setState(pos, UNKNOWN_TILE);
+		return;
+	}
 }
 
 void MineBoard::openTile(CPoint pos)

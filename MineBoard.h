@@ -35,6 +35,10 @@ public:
 	CPoint pos;
 	CPoint sel; //current selected tile
 
+	//Board sizes
+	int width;
+	int height;
+
 	bool finished;//Gamestate
 
 	MineBoard(int size);
@@ -55,6 +59,10 @@ public:
 	void clickDown(CPoint point);
 	void clickUp(CPoint point);
 	void mouseMove(CPoint point);
+	void rightClick(CPoint point);
+
+	//Flagging
+	void flagTile(CPoint pos);
 
 	//Open up tile at x, y pos
 	void openTile(CPoint pos);
