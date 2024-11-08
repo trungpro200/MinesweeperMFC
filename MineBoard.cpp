@@ -34,36 +34,45 @@ void MineBoard::deleteBoard()
 
 void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
 {
-	Sprite* tile;
-	CPoint origin(x * spritesSheet.spriteWidth + pos.x, y * spritesSheet.spriteHeight + pos.y);
+	Tile& tp = getTile(CPoint(x, y));
+	if (!tp.requireUpdate) {
+		return;
+	}
+
+	tp.requireUpdate = false;
+	Sprite* sprite;
+	CPoint origin(x * spriteSheet.spriteWidth + pos.x, y * spriteSheet.spriteHeight + pos.y);
 
 	switch (STATE) {
 	case UNKNOWN_TILE:
-		tile = spritesSheet.getSprite(0, 0);
+		sprite = spriteSheet.getSprite(0, 0);
 		break;
 	case SELECTED_TILE:
-		tile = spritesSheet.getSprite(1, 0);
+		sprite = spriteSheet.getSprite(1, 0);
 		break;
 	case NOBOMB_TILE:
-		tile = spritesSheet.getSprite(1, 0);
+		sprite = spriteSheet.getSprite(1, 0);
 		break;
 	case FLAGGED:
-		tile = spritesSheet.getSprite(2, 0);
+		sprite = spriteSheet.getSprite(2, 0);
 		break;
 	case EXPLODED_TILE:
-		tile = spritesSheet.getSprite(6, 0);
+		sprite = spriteSheet.getSprite(6, 0);
 		break;
 	case BOMB_TILE:
-		tile = spritesSheet.getSprite(5, 0);
+		sprite = spriteSheet.getSprite(5, 0);
+		break;
+	case WRONG_FLAG:
+		sprite = spriteSheet.getSprite(7, 0);
 		break;
 	default:
-		tile = spritesSheet.getSprite(STATE-1, 1);
+		sprite = spriteSheet.getSprite(STATE-1, 1);
 		break;
 	}
 
 	//TRACE("%i, %i\n", origin.x, origin.y);
 
-	tile->blit(dc, origin.x, origin.y);
+	sprite->blit(dc, origin.x, origin.y);
 }
 
 MineBoard::MineBoard(int size)
@@ -71,10 +80,11 @@ MineBoard::MineBoard(int size)
 	this->size = size;
 	finished = false;
 	tiles = nullptr;
-	spritesSheet.setSize(24, 24);
+	bomb = 0;
+	spriteSheet.setSize(24, 24);
 
-	width = spritesSheet.spriteWidth * size;
-	height = spritesSheet.spriteHeight * size;
+	width = spriteSheet.spriteWidth * size;
+	height = spriteSheet.spriteHeight * size;
 
 	createBoard();
 }
@@ -97,6 +107,7 @@ void MineBoard::generateBombs(double rate)
 		for (int j = 0; j < size; j++) {
 			double f = (double) rand() / RAND_MAX;
 			tiles[i][j].haveBomb = f < rate;
+			bomb += f < rate;
 		}
 	}
 }
@@ -181,6 +192,9 @@ void MineBoard::mouseMove(CPoint point)
 
 void MineBoard::rightClick(CPoint point)
 {
+	if (finished) {
+		return;
+	}
 	CPoint p = screenToBoard(point);
 
 	if (p.x == -1) {
@@ -204,18 +218,19 @@ void MineBoard::flagTile(CPoint pos)
 
 void MineBoard::openTile(CPoint pos)
 {
-	Tile& tile = getTile(pos);
-
-	if (tile.state != UNKNOWN_TILE)
+	if (getState(pos) != UNKNOWN_TILE)
 		return;
 
+	Tile& tile = getTile(pos);
+
 	if (tile.haveBomb) {
-		finished = true;
-		tile.state = EXPLODED_TILE;
+		setState(tile, EXPLODED_TILE);
+		
+		finishGame(false); //Yea you lost. Skill issue :/
 		return;
 	}
 	//No bomb
-	tile.state = tile.gradient;
+	setState(tile, tile.gradient);
 
 	if (tile.gradient == 0) {
 		for (auto t : getNeighbour(pos)) {
@@ -232,8 +247,8 @@ CPoint MineBoard::screenToBoard(CPoint screenPos)
 
 	CPoint ret;
 
-	ret.x = (screenPos.x-pos.x) / spritesSheet.spriteWidth;
-	ret.y = (screenPos.y-pos.y) / spritesSheet.spriteHeight;
+	ret.x = (screenPos.x-pos.x) / spriteSheet.spriteWidth;
+	ret.y = (screenPos.y-pos.y) / spriteSheet.spriteHeight;
 
 	if (ret.x >= size || ret.y >=size) { //Lower right boundary
 		return CPoint(-1, -1);
@@ -252,17 +267,52 @@ int MineBoard::getState(CPoint pt) const
 	return tiles[pt.y][pt.x].state;
 }
 
+void MineBoard::setState(Tile& tile, int state)
+{
+	setState(tile.pos, state);
+}
+
 void MineBoard::setState(CPoint pt, int state)
 {
 	if (pt.x == -1)
 		return;
-	tiles[pt.y][pt.x].state = state;
+	Tile& t = getTile(pt);
+	if (t.state != state) {
+		t.state = state;
+		t.requireUpdate = true;
+	}
 }
 
 Tile& MineBoard::getTile(CPoint pt)
 {
 	// TODO: insert return statement here
 	return tiles[pt.y][pt.x];
+}
+
+void MineBoard::finishGame(bool win)
+{
+	finished = true;
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++) {
+			CPoint pos(j, i);
+			Tile& tp = getTile(pos);
+			int state = getState(pos);
+
+			if (state == NOBOMB_TILE) {
+				continue;
+			}
+
+			if (state == FLAGGED && !tp.haveBomb) {
+				setState(tp, WRONG_FLAG);
+				continue;
+			}
+
+			if (state == UNKNOWN_TILE && tp.haveBomb) {
+				setState(tp, BOMB_TILE);
+				continue;
+			}
+		}
 }
 
 std::vector<Tile*> MineBoard::getNeighbour(

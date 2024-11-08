@@ -51,20 +51,23 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create view window\n");
 		return -1;
 	}
+	SetMenu(NULL); //remove the menu ribbon
 
-	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
-	{
-		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
-	}
+	//Commented out cus I don't want these tool bars
 
-	if (!m_wndStatusBar.Create(this))
-	{
-		TRACE0("Failed to create status bar\n");
-		return -1;      // fail to create
-	}
-	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+	//if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+	//	!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+	//{
+	//	TRACE0("Failed to create toolbar\n");
+	//	return -1;      // fail to create
+	//}
+
+	//if (!m_wndStatusBar.Create(this))
+	//{
+	//	TRACE0("Failed to create status bar\n");
+	//	return -1;      // fail to create
+	//}
+	//m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
 	// TODO: Delete these three lines if you don't want the toolbar to be dockable
 	/*m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -83,11 +86,16 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	//  the CREATESTRUCT cs
 	
 	//m_wndView
-	/*cs.cx = m_wndView.game.width + m_wndView.game.pos.x*2;
-	cs.cy = m_wndView.game.height + m_wndView.game.pos.y;*/
+	cs.cx = m_wndView.game.width + m_wndView.game.pos.x*4;
+	cs.cy = m_wndView.game.height + m_wndView.game.pos.y*3;
 
 
-	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
+	cs.dwExStyle |= WS_EX_CLIENTEDGE;
+
+	cs.style &= ~WS_BORDER;
+	cs.style &= ~WS_THICKFRAME;
+	cs.style &= ~WS_MAXIMIZEBOX;
+
 	cs.lpszClass = AfxRegisterWndClass(0);
 	return TRUE;
 }

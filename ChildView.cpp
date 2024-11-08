@@ -17,6 +17,7 @@ CChildView::CChildView() : game(16)
 {
 	game.setPos(10, 30);
 	holdingL = false;
+	background = false;
 }
 
 CChildView::~CChildView()
@@ -29,7 +30,8 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
-	ON_WM_RBUTTONDOWN()
+//	ON_WM_RBUTTONDOWN()
+	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
 
 
@@ -45,6 +47,9 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	cs.style &= ~WS_BORDER;
 	cs.style &= ~WS_THICKFRAME;
 
+	cs.cx = game.width + game.pos.x * 2;
+	cs.cy = game.height + game.pos.y * 2;
+
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
 		::LoadCursor(nullptr, IDC_ARROW),
 		reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1), nullptr);
@@ -57,6 +62,15 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 void CChildView::OnPaint() 
 {
 	CPaintDC dc(this); // device context for painting
+
+	if (!background) {
+		background = true;
+		CRect tp;
+
+		GetClientRect(&tp);
+
+		dc.FillRect(tp, &CBrush(RGB(190, 190, 190)));
+	}
 	
 	game.draw(dc);
 }
@@ -97,7 +111,15 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 
-void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
+//void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
+//{
+	// TODO: Add your message handler code here and/or call default
+	
+//	CWnd::OnRButtonDown(nFlags, point);
+//}
+
+
+void CChildView::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	if (holdingL) {
@@ -107,5 +129,5 @@ void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
 	game.rightClick(point);
 	Invalidate(0);
 
-	CWnd::OnRButtonDown(nFlags, point);
+	CWnd::OnRButtonUp(nFlags, point);
 }
