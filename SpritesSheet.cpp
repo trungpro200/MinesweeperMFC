@@ -39,8 +39,8 @@ void SpritesSheet::createSprites(int row, int col)
 		sprites[i] = new Sprite[col];
 	}
 }
-
-void SpritesSheet::setSize(int h, int w) //Set the size of the sprite and load them
+//Set the size of the sprite and load them
+void SpritesSheet::setSize(int h, int w) 
 {
 	spriteHeight = h;
 	spriteWidth = w;

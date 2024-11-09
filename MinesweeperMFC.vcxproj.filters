@@ -45,6 +45,9 @@
     <ClInclude Include="MineBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Face.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MinesweeperMFC.cpp">
@@ -68,6 +71,9 @@
     <ClCompile Include="MineBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Face.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MinesweeperMFC.rc">
@@ -87,6 +93,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\2000.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\faces.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

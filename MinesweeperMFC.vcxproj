@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ChildView.h" />
+    <ClInclude Include="Face.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MineBoard.h" />
@@ -196,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildView.cpp" />
+    <ClCompile Include="Face.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MineBoard.cpp" />
     <ClCompile Include="MinesweeperMFC.cpp" />
@@ -216,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\2000.png" />
+    <Image Include="res\faces.png" />
     <Image Include="res\MinesweeperMFC.ico" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>

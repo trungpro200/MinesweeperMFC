@@ -38,13 +38,14 @@ public:
 	CPoint sel; //current selected tile
 
 	//Board sizes
-	int width;
-	int height;
+	int width; //width of the board in pixel
+	int height;//height of the board in pixel
 	//Bomb count
 	int bomb;
 
 	//Init
 	bool finished;//Gamestate
+	bool started;
 
 	MineBoard(int size);
 	~MineBoard();
@@ -89,5 +90,8 @@ public:
 	
 	//Moore Neighbour
 	std::vector<Tile*> getNeighbour(CPoint pos);
+
+	void restartGame();
+	void startGame(CPoint pos);
 };
 

@@ -3,6 +3,7 @@
 //
 #pragma once
 #include "MineBoard.h"
+#include "Face.h"
 
 
 // CChildView window
@@ -16,6 +17,7 @@ public:
 // Attributes
 public:
 	MineBoard game;
+	Face face;
 	bool holdingL;		//Whether LButton is down or not
 	bool background;	//Whether drew background or not
 // Operations

@@ -13,12 +13,7 @@ void MineBoard::createBoard()
 	}
 
 	//Randomize
-	generateBombs(0.1f);
-	//Calc gradients
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++) {
-			calcGradient(CPoint(i, j));
-		}
+	
 }
 
 void MineBoard::deleteBoard()
@@ -77,6 +72,7 @@ void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
 
 MineBoard::MineBoard(int size)
 {
+	started = false;
 	this->size = size;
 	finished = false;
 	tiles = nullptr;
@@ -102,7 +98,11 @@ void MineBoard::setPos(int x, int y)
 
 void MineBoard::generateBombs(double rate)
 {
-	srand(time(NULL)); //Seeding
+	static int a = 0;
+	srand(time(NULL)+a); //Seeding
+
+	a++;
+
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			double f = (double) rand() / RAND_MAX;
@@ -110,6 +110,12 @@ void MineBoard::generateBombs(double rate)
 			bomb += f < rate;
 		}
 	}
+
+	//Calc gradients
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++) {
+			calcGradient(CPoint(i, j));
+		}
 }
 
 void MineBoard::calcGradient(CPoint pos) 
@@ -150,6 +156,8 @@ void MineBoard::clickDown(CPoint point)
 		return;
 	if (getState(clk) != UNKNOWN_TILE)
 		return;
+
+	if (!started) startGame(clk);
 
 	getNeighbour(clk);
 
@@ -341,4 +349,13 @@ std::vector<Tile*> MineBoard::getNeighbour(
 			neighbour.push_back(&tiles[y][x]);
 		}
 	return neighbour;
+}
+
+void MineBoard::startGame(CPoint pos)
+{
+	started = true;
+	
+	while (getTile(pos).gradient != 0 || getTile(pos).haveBomb) {
+		generateBombs(0.15f);
+	}
 }

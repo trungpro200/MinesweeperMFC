@@ -15,7 +15,9 @@
 
 CChildView::CChildView() : game(16)
 {
-	game.setPos(10, 30);
+	game.setPos(10, 36);
+	face.setPos(&game);
+
 	holdingL = false;
 	background = false;
 }
@@ -73,6 +75,8 @@ void CChildView::OnPaint()
 	}
 	
 	game.draw(dc);
+	//face.getSprite(NORMAL, 0)->blit(dc, 0, 0);
+	face.draw(dc);
 }
 
 
@@ -80,7 +84,16 @@ void CChildView::OnPaint()
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
+	if (game.finished)
+		return;
+
 	game.clickDown(point);
+
+	if (game.screenToBoard(point).x != -1) {
+		face.setState(OPENING);
+	}
+	face.clickDown(point);
+
 	holdingL = true;
 
 	Invalidate(0);
@@ -91,8 +104,11 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
+	if (game.finished)
+		return;
 	holdingL = false;
 
+	face.clickUp(point);
 	game.clickUp(point);
 	Invalidate(0);
 	CWnd::OnLButtonUp(nFlags, point);
@@ -105,6 +121,7 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 	if (!holdingL) {
 		return;
 	}
+	face.mouseMove(point);
 	game.mouseMove(point);
 	Invalidate(0);
 	CWnd::OnMouseMove(nFlags, point);
