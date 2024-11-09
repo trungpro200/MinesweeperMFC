@@ -19,7 +19,7 @@ public:
 
 
     CPoint pos;
-
+    
     FACE currentState;
     bool requireUpdate;
 

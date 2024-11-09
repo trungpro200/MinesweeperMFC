@@ -32,7 +32,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
-//	ON_WM_RBUTTONDOWN()
+	//ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
 
@@ -55,8 +55,6 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
 		::LoadCursor(nullptr, IDC_ARROW),
 		reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1), nullptr);
-
-	
 
 	return TRUE;
 }
@@ -84,8 +82,8 @@ void CChildView::OnPaint()
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (game.finished)
-		return;
+	//if (game.finished)
+	//	return;
 
 	game.clickDown(point);
 
@@ -104,12 +102,22 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (game.finished)
-		return;
+	/*if (game.finished)
+		return;*/
 	holdingL = false;
 
 	face.clickUp(point);
 	game.clickUp(point);
+
+	if (game.finished) {
+		if (game.win) {
+			face.setState(WON);
+		}
+		else {
+			face.setState(DEAD);
+		}
+	}
+
 	Invalidate(0);
 	CWnd::OnLButtonUp(nFlags, point);
 }

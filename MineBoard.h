@@ -46,6 +46,7 @@ public:
 	//Init
 	bool finished;//Gamestate
 	bool started;
+	bool win;
 
 	MineBoard(int size);
 	~MineBoard();

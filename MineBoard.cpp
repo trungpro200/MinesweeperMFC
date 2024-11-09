@@ -157,7 +157,7 @@ void MineBoard::clickDown(CPoint point)
 	if (getState(clk) != UNKNOWN_TILE)
 		return;
 
-	if (!started) startGame(clk);
+	
 
 	getNeighbour(clk);
 
@@ -173,6 +173,7 @@ void MineBoard::clickUp(CPoint point)
 
 	if (getState(sel) == SELECTED_TILE) {
 		setState(sel, UNKNOWN_TILE);
+		if (!started) startGame(sel);
 		openTile(sel);
 		//TRACE("%i\n", getTile(sel).gradient);
 	}
@@ -300,6 +301,7 @@ Tile& MineBoard::getTile(CPoint pt)
 void MineBoard::finishGame(bool win)
 {
 	finished = true;
+	this->win = win;
 
 	for (int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++) {
