@@ -13,6 +13,7 @@
 #define FLAGGED -6
 #define WRONG_FLAG -7
 
+
 //The remain is for surrounded by n-bomb cases//
 struct Tile {
 	bool haveBomb = 0;
@@ -93,6 +94,12 @@ public:
 	
 	//Moore Neighbour
 	std::vector<Tile*> getNeighbour(CPoint pos);
+
+	//return how many neighbour that which match given state
+	int queryNeighbour(CPoint pos, int state);
+	/*int getNeigbourFlags(CPoint pos);
+	int getUnknownNeighbour(CPoint pos);*/
+
 
 	void restartGame();
 	void startGame(CPoint pos);

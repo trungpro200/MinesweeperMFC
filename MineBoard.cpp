@@ -213,8 +213,29 @@ void MineBoard::clickUp(CPoint point)
 		setState(sel, UNKNOWN_TILE);
 		if (!started) startGame(sel);
 		openTile(sel);
+		return;
 		//TRACE("%i\n", getTile(sel).gradient);
 	}
+
+	CPoint up = screenToBoard(point);
+	if (up.x == -1) return;
+
+	if (getState(up) >= 1) {
+		if (queryNeighbour(up, FLAGGED) == getState(up)) {
+			for (auto t : getNeighbour(up)) {
+				openTile(t->pos);
+			}
+			return;
+		}
+		
+		if ((queryNeighbour(up, UNKNOWN_TILE)+queryNeighbour(up, FLAGGED)) == getState(up)) {
+			for (auto t : getNeighbour(up)) {
+				if (t->state == UNKNOWN_TILE)
+					setState(*t, FLAGGED);
+			}
+		}
+	}
+	
 	sel = CPoint(-1, -1);
 }
 
@@ -396,6 +417,34 @@ std::vector<Tile*> MineBoard::getNeighbour(
 		}
 	return neighbour;
 }
+
+int MineBoard::queryNeighbour(CPoint pos, int state)
+{
+	int S = 0;
+	for (auto t : getNeighbour(pos)) {
+		S += (state == t->state);
+	}
+	return S;
+}
+
+//int MineBoard::getNeigbourFlags(CPoint pos)
+//{
+//	int S = 0;
+//	for (auto t : getNeighbour(pos)) {
+//		if (t->state == FLAGGED) {
+//			S++;
+//		}
+//	}
+//	return S;
+//}
+//
+//int MineBoard::getUnknownNeighbour(CPoint pos)
+//{
+//	int S = 0;
+//	for (auto t : getNeighbour(pos)) {
+//		S += t->state == UNKNOWN_TILE;
+//	}
+//}
 
 void MineBoard::restartGame()
 {
