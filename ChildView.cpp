@@ -87,9 +87,10 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	game.clickDown(point);
 
-	if (game.screenToBoard(point).x != -1) {
+	if (game.screenToBoard(point).x != -1 && !game.finished) {
 		face.setState(OPENING);
 	}
+
 	face.clickDown(point);
 
 	holdingL = true;
@@ -106,8 +107,17 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 		return;*/
 	holdingL = false;
 
+	if (face.currentState == SELECTED) {
+		game.restartGame();
+	}
+
 	face.clickUp(point);
 	game.clickUp(point);
+
+	//TRACE("%i\n", game.tileLeft);
+	if (game.bomb == game.tileLeft) {
+		game.finishGame(true);
+	}
 
 	if (game.finished) {
 		if (game.win) {

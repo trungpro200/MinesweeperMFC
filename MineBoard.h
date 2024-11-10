@@ -42,6 +42,7 @@ public:
 	int height;//height of the board in pixel
 	//Bomb count
 	int bomb;
+	int tileLeft;
 
 	//Init
 	bool finished;//Gamestate

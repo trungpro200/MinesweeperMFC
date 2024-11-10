@@ -72,11 +72,15 @@ void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
 
 MineBoard::MineBoard(int size)
 {
+	//Default stuffs
 	started = false;
-	this->size = size;
 	finished = false;
+	bomb = 1;
+	tileLeft = size * size;
+
+	//shouldn't be default
 	tiles = nullptr;
-	bomb = 0;
+	this->size = size;
 	spriteSheet.setSize(24, 24);
 
 	width = spriteSheet.spriteWidth * size;
@@ -274,6 +278,8 @@ void MineBoard::openTile(CPoint pos)
 	}
 	//No bomb
 	setState(tile, tile.gradient);
+	tileLeft--;
+	TRACE("%i\n", tileLeft);
 
 	if (tile.gradient == 0) {
 		for (auto t : getNeighbour(pos)) {
@@ -353,7 +359,11 @@ void MineBoard::finishGame(bool win)
 			}
 
 			if (state == UNKNOWN_TILE && tp.haveBomb) {
-				setState(tp, BOMB_TILE);
+				if (win) {
+					setState(tp, FLAGGED);
+				}
+				else
+					setState(tp, BOMB_TILE);
 				continue;
 			}
 		}
@@ -387,12 +397,22 @@ std::vector<Tile*> MineBoard::getNeighbour(
 	return neighbour;
 }
 
+void MineBoard::restartGame()
+{
+	started = false;
+	finished = false;
+	bomb = 0;
+	tileLeft = size * size;
+
+	createBoard();
+}
+
 void MineBoard::startGame(CPoint pos)
 {
 	started = true;
 	
 	while (getTile(pos).gradient != 0 || getTile(pos).haveBomb) {
-		generateBombs(30, pos);
+		generateBombs(15, pos);
 	}
 
 	int S = 0;
