@@ -118,6 +118,40 @@ void MineBoard::generateBombs(double rate)
 		}
 }
 
+void MineBoard::generateBombs(int count, CPoint bl)
+{
+	static int a = 0;
+	srand(time(NULL) + a); //Seeding
+	bomb = count;
+
+	for (int i = 0; i < count; i++) {
+		CPoint ran;
+		do
+		{
+			ran.x = rand() % size;
+			ran.y = rand() % size;
+
+			if (getTile(ran).haveBomb) {
+				continue;
+			}
+
+			CPoint d = ran - bl;
+			if (sqrt(d.x * d.x + (d.y * d.y)) < 1.5) {
+				continue;
+			}
+
+			getTile(ran).haveBomb = 1;
+			break;
+		} while (true);
+	}
+
+	//Calc gradients
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++) {
+			calcGradient(CPoint(i, j));
+		}
+}
+
 void MineBoard::calcGradient(CPoint pos) 
 {
 	if (pos.x == -1)
@@ -358,6 +392,13 @@ void MineBoard::startGame(CPoint pos)
 	started = true;
 	
 	while (getTile(pos).gradient != 0 || getTile(pos).haveBomb) {
-		generateBombs(0.15f);
+		generateBombs(30, pos);
+	}
+
+	int S = 0;
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			S += getState(CPoint(i, j)) == BOMB_TILE;
+		}
 	}
 }

@@ -55,6 +55,7 @@ public:
 
 	//rate 0-1, 0 mean no bomb, 1 mean all tiles have bomb :skull:
 	void generateBombs(double rate); 
+	void generateBombs(int count, CPoint bl);
 
 	//Calculate the number of bomb surround a tile at pos
 	//Also assign the pos of the tile
