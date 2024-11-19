@@ -18,7 +18,7 @@
 struct Tile {
 	bool haveBomb = 0;
 	int state = UNKNOWN_TILE;
-	int gradient = 8; //Number of bomb surround this tile (0-8)
+	int gradient = 0; //Number of bomb surround this tile (0-8)
 	bool requireUpdate = true;
 	CPoint pos;
 };
@@ -55,13 +55,11 @@ public:
 
 	void setPos(int x, int y);
 
-	//rate 0-1, 0 mean no bomb, 1 mean all tiles have bomb :skull:
-	void generateBombs(double rate); 
 	void generateBombs(int count, CPoint bl);
 
 	//Calculate the number of bomb surround a tile at pos
 	//Also assign the pos of the tile
-	void calcGradient(CPoint pos);
+	//void calcGradient(CPoint pos);
 
 	void draw(CPaintDC& dc);
 

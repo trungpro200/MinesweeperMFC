@@ -10,6 +10,9 @@ void MineBoard::createBoard()
 
 	for (int i = 0; i < size; i++) {
 		tiles[i] = new Tile[size];
+		for (int j = 0; j < size; j++) {
+			tiles[i][j].pos = CPoint(j, i);
+		}
 	}
 
 	//Randomize
@@ -100,27 +103,6 @@ void MineBoard::setPos(int x, int y)
 	pos.y = y;
 }
 
-void MineBoard::generateBombs(double rate)
-{
-	static int a = 0;
-	srand(time(NULL)+a); //Seeding
-
-	a++;
-
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
-			double f = (double) rand() / RAND_MAX;
-			tiles[i][j].haveBomb = f < rate;
-			bomb += f < rate;
-		}
-	}
-
-	//Calc gradients
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++) {
-			calcGradient(CPoint(i, j));
-		}
-}
 
 void MineBoard::generateBombs(int count, CPoint bl)
 {
@@ -128,49 +110,31 @@ void MineBoard::generateBombs(int count, CPoint bl)
 	srand(time(NULL) + a); //Seeding
 	bomb = count;
 
-	for (int i = 0; i < count; i++) {
-		CPoint ran;
-		do
-		{
-			ran.x = rand() % size;
-			ran.y = rand() % size;
+	int i = 0;
+	CPoint ran;
 
-			if (getTile(ran).haveBomb) {
-				continue;
-			}
+	while (i < count) {
+		ran.x = rand() % size;
+		ran.y = rand() % size;
 
-			CPoint d = ran - bl;
-			if (sqrt(d.x * d.x + (d.y * d.y)) < 1.5) {
-				continue;
-			}
+		if (getTile(ran).haveBomb)
+			continue;
+		if (ran == bl)
+			continue;
 
-			getTile(ran).haveBomb = 1;
-			break;
-		} while (true);
-	}
+		CPoint tp = ran - bl;
+		tp.x = abs(tp.x);
+		tp.y = abs(tp.y);
+		if (tp.x <= 1 && tp.y <= 1)
+			continue;
 
-	//Calc gradients
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++) {
-			calcGradient(CPoint(i, j));
+		i++;
+		getTile(ran).haveBomb = 1;
+
+		for (auto t : getNeighbour(ran)) {
+			t->gradient++;
 		}
-}
-
-void MineBoard::calcGradient(CPoint pos) 
-{
-	if (pos.x == -1)
-		return;
-
-	getTile(pos).pos = pos;
-
-	std::vector<Tile*> neighbour = getNeighbour(pos);
-	int S = 0;
-
-	for (Tile* a : neighbour) {
-		S += a->haveBomb;
 	}
-
-	tiles[pos.y][pos.x].gradient = S;
 }
 
 void MineBoard::draw(CPaintDC& dc)
@@ -211,7 +175,8 @@ void MineBoard::clickUp(CPoint point)
 
 	if (getState(sel) == SELECTED_TILE) {
 		setState(sel, UNKNOWN_TILE);
-		if (!started) startGame(sel);
+		if (!started) 
+			startGame(sel);
 		openTile(sel);
 		return;
 		//TRACE("%i\n", getTile(sel).gradient);
@@ -427,25 +392,6 @@ int MineBoard::queryNeighbour(CPoint pos, int state)
 	return S;
 }
 
-//int MineBoard::getNeigbourFlags(CPoint pos)
-//{
-//	int S = 0;
-//	for (auto t : getNeighbour(pos)) {
-//		if (t->state == FLAGGED) {
-//			S++;
-//		}
-//	}
-//	return S;
-//}
-//
-//int MineBoard::getUnknownNeighbour(CPoint pos)
-//{
-//	int S = 0;
-//	for (auto t : getNeighbour(pos)) {
-//		S += t->state == UNKNOWN_TILE;
-//	}
-//}
-
 void MineBoard::restartGame()
 {
 	started = false;
@@ -460,9 +406,8 @@ void MineBoard::startGame(CPoint pos)
 {
 	started = true;
 	
-	while (getTile(pos).gradient != 0 || getTile(pos).haveBomb) {
-		generateBombs(15, pos);
-	}
+	generateBombs(30, pos);
+
 
 	int S = 0;
 	for (int i = 0; i < size; i++) {
