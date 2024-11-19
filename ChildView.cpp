@@ -102,9 +102,6 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
-	/*if (game.finished)
-		return;*/
 	holdingL = false;
 
 	if (face.currentState == SELECTED) {
@@ -114,7 +111,6 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 	face.clickUp(point);
 	game.clickUp(point);
 
-	//TRACE("%i\n", game.tileLeft);
 	if (game.bomb == game.tileLeft) {
 		game.finishGame(true);
 	}
@@ -135,7 +131,6 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 	if (!holdingL) {
 		return;
 	}
@@ -145,18 +140,8 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 	CWnd::OnMouseMove(nFlags, point);
 }
 
-
-//void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
-//{
-	// TODO: Add your message handler code here and/or call default
-	
-//	CWnd::OnRButtonDown(nFlags, point);
-//}
-
-
 void CChildView::OnRButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 	if (holdingL) {
 		return;
 	}

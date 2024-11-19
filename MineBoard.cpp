@@ -14,9 +14,6 @@ void MineBoard::createBoard()
 			tiles[i][j].pos = CPoint(j, i);
 		}
 	}
-
-	//Randomize
-	
 }
 
 void MineBoard::deleteBoard()
@@ -107,8 +104,8 @@ void MineBoard::setPos(int x, int y)
 void MineBoard::generateBombs(int count, CPoint bl)
 {
 	static int a = 0;
-	srand(time(NULL) + a); //Seeding
-	bomb = count;
+	srand(time(NULL) + a); //Seeding for randomization
+	bomb = count; 
 
 	int i = 0;
 	CPoint ran;
@@ -179,7 +176,6 @@ void MineBoard::clickUp(CPoint point)
 			startGame(sel);
 		openTile(sel);
 		return;
-		//TRACE("%i\n", getTile(sel).gradient);
 	}
 
 	CPoint up = screenToBoard(point);

@@ -12,9 +12,8 @@
 #define ERRORTYPE -5
 #define FLAGGED -6
 #define WRONG_FLAG -7
-
-
 //The remain is for surrounded by n-bomb cases//
+
 struct Tile {
 	bool haveBomb = 0;
 	int state = UNKNOWN_TILE;
@@ -26,7 +25,9 @@ struct Tile {
 class MineBoard
 {
 private:
+	//Create and assign tile's position
 	void createBoard();
+	//Used to free up memory
 	void deleteBoard();
 	void drawTile(CPaintDC& dc, int STATE, int x, int y);
 public:
@@ -47,8 +48,8 @@ public:
 
 	//Init
 	bool finished;//Gamestate
-	bool started;
-	bool win;
+	bool started;//Whether the game started or not
+	bool win;//Skill issues
 
 	MineBoard(int size);
 	~MineBoard();
@@ -98,8 +99,6 @@ public:
 	/*int getNeigbourFlags(CPoint pos);
 	int getUnknownNeighbour(CPoint pos);*/
 
-
 	void restartGame();
 	void startGame(CPoint pos);
 };
-
