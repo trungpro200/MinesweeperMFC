@@ -1,8 +1,8 @@
 #pragma once
-class Sprite
+class Sprite : public CImage
 {
 public:
-	CImage image;
+	//CImage image;
 
 	Sprite(LPCTSTR src);
 	Sprite(CImage image);

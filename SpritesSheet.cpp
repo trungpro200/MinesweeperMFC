@@ -21,7 +21,7 @@ SpritesSheet::SpritesSheet(LPCTSTR src) : Sprite(src)
 
 SpritesSheet::~SpritesSheet()
 {
-	int row = image.GetHeight() / spriteHeight;
+	int row = GetHeight() / spriteHeight;
 
 	if (sprites == nullptr)
 		return;
@@ -45,27 +45,27 @@ void SpritesSheet::setSize(int h, int w)
 	spriteHeight = h;
 	spriteWidth = w;
 
-	int row = image.GetHeight() / h;
-	int col = image.GetWidth() / w;
+	int row = GetHeight() / h;
+	int col = GetWidth() / w;
 
 	this->row = row;
 	this->col = col;
 
 	createSprites(row, col);
 
-	CDC* src = CDC::FromHandle(image.GetDC());
+	CDC* src = CDC::FromHandle(GetDC());
 
 	for (int i = 0; i < row; i++)
 		for (int j = 0; j < col; j++) {
-			sprites[i][j].image.Create(w, h, image.GetBPP());
+			sprites[i][j].Create(w, h, GetBPP());
 
-			CDC* dest = CDC::FromHandle(sprites[i][j].image.GetDC());
+			CDC* dest = CDC::FromHandle(sprites[i][j].GetDC());
 
 			dest->BitBlt(0, 0, w, h, src, j * w, i * w, SRCCOPY);
 
-			sprites[i][j].image.ReleaseDC();
+			sprites[i][j].ReleaseDC();
 		}
-	image.ReleaseDC();
+	ReleaseDC();
 }
 
 Sprite* SpritesSheet::getSprite(int x, int y)
