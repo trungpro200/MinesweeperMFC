@@ -181,7 +181,7 @@ void MineBoard::clickUp(CPoint point)
 	CPoint up = screenToBoard(point);
 	if (up.x == -1) return;
 
-	if (getState(up) >= 1) {
+	/*if (getState(up) >= 1) {
 		if (queryNeighbour(up, FLAGGED) == getState(up)) {
 			for (auto t : getNeighbour(up)) {
 				openTile(t->pos);
@@ -195,7 +195,7 @@ void MineBoard::clickUp(CPoint point)
 					setState(*t, FLAGGED);
 			}
 		}
-	}
+	}*/
 	
 	sel = CPoint(-1, -1);
 }
