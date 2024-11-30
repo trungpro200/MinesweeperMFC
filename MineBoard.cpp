@@ -192,12 +192,12 @@ void MineBoard::clickUp(CPoint point)
 			return;
 		}
 		
-		if ((queryNeighbour(up, UNKNOWN_TILE)+queryNeighbour(up, FLAGGED)) == getState(up)) {
+		/*if ((queryNeighbour(up, UNKNOWN_TILE)+queryNeighbour(up, FLAGGED)) == getState(up)) {
 			for (auto t : getNeighbour(up)) {
 				if (t->state == UNKNOWN_TILE)
 					setState(*t, FLAGGED);
 			}
-		}
+		}*/
 	}
 	
 	sel = CPoint(-1, -1);
