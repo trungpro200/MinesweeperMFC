@@ -158,30 +158,33 @@ void MineBoard::clickDown(CPoint point)
 
 	
 
-	getNeighbour(clk);
+	//getNeighbour(clk);
 
 	sel = clk;
 	
-	setState(sel, SELECTED_TILE);
+	//setState(sel, SELECTED_TILE);
 }
 
 //Comfirm sweeping
 void MineBoard::clickUp(CPoint point)
 {
-	if (finished) return;
-
-	if (getState(sel) == SELECTED_TILE) {
-		setState(sel, UNKNOWN_TILE);
-		if (!started) 
-			startGame(sel);
-		openTile(sel);
-		return;
-	}
-
 	CPoint up = screenToBoard(point);
 	if (up.x == -1) return;
 
-	/*if (getState(up) >= 1) {
+	if (finished) return;
+
+
+	if (getState(up) == UNKNOWN_TILE) {
+		//setState(sel, UNKNOWN_TILE);
+		if (!started) 
+			startGame(up);
+		openTile(up);
+		return;
+	}
+
+	
+
+	if (getState(up) >= 1) {
 		if (queryNeighbour(up, FLAGGED) == getState(up)) {
 			for (auto t : getNeighbour(up)) {
 				openTile(t->pos);
@@ -195,14 +198,14 @@ void MineBoard::clickUp(CPoint point)
 					setState(*t, FLAGGED);
 			}
 		}
-	}*/
+	}
 	
 	sel = CPoint(-1, -1);
 }
 
 void MineBoard::mouseMove(CPoint point)
 {
-	if (finished) return;
+	/*if (finished) return;
 
 	CPoint nPos = screenToBoard(point);
 
@@ -211,12 +214,13 @@ void MineBoard::mouseMove(CPoint point)
 
 	if (nPos.x == -1 || getState(nPos) != UNKNOWN_TILE) {
 		setState(sel, UNKNOWN_TILE);
+		sel = CPoint(-1, -1);
 		return;
 	}
 
 	setState(sel, UNKNOWN_TILE);
 	setState(nPos, SELECTED_TILE);
-	sel = nPos;
+	sel = nPos;*/
 }
 
 void MineBoard::rightClick(CPoint point)
@@ -403,12 +407,4 @@ void MineBoard::startGame(CPoint pos)
 	started = true;
 	
 	generateBombs(30, pos);
-
-
-	int S = 0;
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
-			S += getState(CPoint(i, j)) == BOMB_TILE;
-		}
-	}
 }

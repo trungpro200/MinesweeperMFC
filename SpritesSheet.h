@@ -12,7 +12,7 @@ public:
 	SpritesSheet(LPCTSTR src);
 	~SpritesSheet();
 
-	void createSprites(int row, int col);
+	void allocateSprites(int row, int col);
 
 	void setSize(int h, int w);
 	Sprite* getSprite(int x, int y);

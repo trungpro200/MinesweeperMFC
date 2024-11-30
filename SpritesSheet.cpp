@@ -31,7 +31,7 @@ SpritesSheet::~SpritesSheet()
 	delete[] sprites;
 }
 
-void SpritesSheet::createSprites(int row, int col)
+void SpritesSheet::allocateSprites(int row, int col)
 {
 	sprites = new Sprite * [row];
 
@@ -51,7 +51,7 @@ void SpritesSheet::setSize(int h, int w)
 	this->row = row;
 	this->col = col;
 
-	createSprites(row, col);
+	allocateSprites(row, col);
 
 	CDC* src = CDC::FromHandle(GetDC());
 
