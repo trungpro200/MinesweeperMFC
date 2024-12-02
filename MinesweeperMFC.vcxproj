@@ -222,6 +222,13 @@
     <Image Include="res\MinesweeperMFC.ico" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\explode.wav" />
+    <Media Include="res\flag.wav" />
+    <Media Include="res\pop.wav" />
+    <Media Include="res\unflag.wav" />
+    <Media Include="res\win.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

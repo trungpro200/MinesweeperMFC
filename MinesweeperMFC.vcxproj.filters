@@ -99,4 +99,21 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\pop.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\explode.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\win.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\flag.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\unflag.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
 </Project>

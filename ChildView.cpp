@@ -113,6 +113,7 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	if (game.bomb == game.tileLeft) {
 		game.finishGame(true);
+		
 	}
 
 	if (game.finished) {
@@ -122,6 +123,11 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 		else {
 			face.setState(DEAD);
 		}
+	}
+
+	if (game.onExcavate && !game.finished) {
+		game.onExcavate = false;
+		game.sound(L"res/pop.wav");
 	}
 
 	Invalidate(0);

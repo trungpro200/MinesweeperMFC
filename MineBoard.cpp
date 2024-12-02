@@ -77,6 +77,7 @@ MineBoard::MineBoard(int size)
 	finished = false;
 	bomb = 1;
 	tileLeft = size * size;
+	onExcavate = false;
 
 	//shouldn't be default
 	tiles = nullptr;
@@ -116,8 +117,6 @@ void MineBoard::generateBombs(int count, CPoint bl)
 
 		if (getTile(ran).haveBomb)
 			continue;
-		if (ran == bl)
-			continue;
 
 		CPoint tp = ran - bl;
 		tp.x = abs(tp.x);
@@ -156,11 +155,9 @@ void MineBoard::clickDown(CPoint point)
 	if (getState(clk) != UNKNOWN_TILE)
 		return;
 
-	
-
 	//getNeighbour(clk);
 
-	sel = clk;
+	//sel = clk;
 	
 	//setState(sel, SELECTED_TILE);
 }
@@ -173,12 +170,18 @@ void MineBoard::clickUp(CPoint point)
 
 	if (finished) return;
 
+	
+
 
 	if (getState(up) == UNKNOWN_TILE) {
 		//setState(sel, UNKNOWN_TILE);
 		if (!started) 
 			startGame(up);
 		openTile(up);
+
+		//PlaySound(L"res/pop.wav", NULL, SND_FILENAME | SND_ASYNC);
+
+
 		return;
 	}
 
@@ -186,6 +189,7 @@ void MineBoard::clickUp(CPoint point)
 
 	if (getState(up) >= 1) {
 		if (queryNeighbour(up, FLAGGED) == getState(up)) {
+
 			for (auto t : getNeighbour(up)) {
 				openTile(t->pos);
 			}
@@ -199,7 +203,7 @@ void MineBoard::clickUp(CPoint point)
 			}
 		}*/
 	}
-	
+
 	sel = CPoint(-1, -1);
 }
 
@@ -241,10 +245,12 @@ void MineBoard::flagTile(CPoint pos)
 {
 	if (getState(pos) == UNKNOWN_TILE) {
 		setState(pos, FLAGGED);
+		sound(L"res/flag.wav");
 		return;
 	}
 	if (getState(pos) == FLAGGED) {
 		setState(pos, UNKNOWN_TILE);
+		sound(L"res/unflag.wav");
 		return;
 	}
 }
@@ -315,6 +321,10 @@ void MineBoard::setState(CPoint pt, int state)
 	if (t.state != state) {
 		t.state = state;
 		t.requireUpdate = true;
+
+		if (state >= 0) {
+			onExcavate = true;
+		}
 	}
 }
 
@@ -326,8 +336,19 @@ Tile& MineBoard::getTile(CPoint pt)
 
 void MineBoard::finishGame(bool win)
 {
+	if (finished) {
+		return;
+	}
 	finished = true;
 	this->win = win;
+
+	if (win) {
+		sound(L"res/win.wav");
+	}
+	else
+	{
+		sound(L"res/explode.wav");
+	}
 
 	for (int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++) {
@@ -394,6 +415,8 @@ int MineBoard::queryNeighbour(CPoint pos, int state)
 
 void MineBoard::restartGame()
 {
+	sound(NULL);
+
 	started = false;
 	finished = false;
 	bomb = 0;
@@ -407,4 +430,9 @@ void MineBoard::startGame(CPoint pos)
 	started = true;
 	
 	generateBombs(30, pos);
+}
+
+void MineBoard::sound(LPCTSTR src)
+{
+	PlaySound(src, NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT);
 }

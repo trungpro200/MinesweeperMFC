@@ -4,6 +4,8 @@
 #pragma once
 #include "MineBoard.h"
 #include "Face.h"
+#include<mmsystem.h>
+#pragma comment(lib, "Winmm.lib")
 
 
 // CChildView window

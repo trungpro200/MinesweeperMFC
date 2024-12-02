@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <atltypes.h>
 #include <vector>
+#include<mmsystem.h>
+#pragma comment(lib, "Winmm.lib")
+
 
 #define NOBOMB_TILE 0
 #define UNKNOWN_TILE -1
@@ -51,6 +54,8 @@ public:
 	bool started;//Whether the game started or not
 	bool win;//Skill issues
 
+	bool onExcavate;
+
 	MineBoard(int size);
 	~MineBoard();
 
@@ -85,7 +90,7 @@ public:
 	void setState(Tile& tile, int state);
 	void setState(CPoint pt, int state);
 	
-	//The name tell the behavior :/
+	//The name tell the usage :/
 	Tile& getTile(CPoint pt);
 
 	//When the game end
@@ -94,11 +99,14 @@ public:
 	//Moore Neighbour
 	std::vector<Tile*> getNeighbour(CPoint pos);
 
-	//return how many neighbour that which match given state
+	//return how many neighbour which matched given state
 	int queryNeighbour(CPoint pos, int state);
 	/*int getNeigbourFlags(CPoint pos);
 	int getUnknownNeighbour(CPoint pos);*/
 
 	void restartGame();
 	void startGame(CPoint pos);
+
+	//Sound
+	void sound(LPCTSTR src);
 };
