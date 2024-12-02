@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MineBoard.h"
 
-void MineBoard::createBoard()
+void GameClass::createBoard()
 {
 	if (tiles != nullptr)
 		deleteBoard();
@@ -16,7 +16,7 @@ void MineBoard::createBoard()
 	}
 }
 
-void MineBoard::deleteBoard()
+void GameClass::deleteBoard()
 {
 	if (tiles == nullptr)
 		return;
@@ -27,7 +27,7 @@ void MineBoard::deleteBoard()
 	delete[] tiles;
 }
 
-void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
+void GameClass::drawTile(CPaintDC& dc, int STATE, int x, int y)
 {
 	Tile& tp = getTile(CPoint(x, y));
 	if (!tp.requireUpdate) {
@@ -70,7 +70,7 @@ void MineBoard::drawTile(CPaintDC& dc, int STATE, int x, int y)
 	sprite->blit(dc, origin.x, origin.y);
 }
 
-MineBoard::MineBoard(int size)
+GameClass::GameClass(int size)
 {
 	//Default stuffs
 	started = false;
@@ -90,19 +90,19 @@ MineBoard::MineBoard(int size)
 	createBoard();
 }
 
-MineBoard::~MineBoard()
+GameClass::~GameClass()
 {
 	deleteBoard();
 }
 
-void MineBoard::setPos(int x, int y)
+void GameClass::setPos(int x, int y)
 {
 	pos.x = x;
 	pos.y = y;
 }
 
 
-void MineBoard::generateBombs(int count, CPoint bl)
+void GameClass::generateBombs(int count, CPoint bl)
 {
 	static int a = 0;
 	srand(time(NULL) + a); //Seeding for randomization
@@ -133,7 +133,7 @@ void MineBoard::generateBombs(int count, CPoint bl)
 	}
 }
 
-void MineBoard::draw(CPaintDC& dc)
+void GameClass::draw(CPaintDC& dc)
 {
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
@@ -145,7 +145,7 @@ void MineBoard::draw(CPaintDC& dc)
 }
 
 //Select only
-void MineBoard::clickDown(CPoint point)
+void GameClass::clickDown(CPoint point)
 {
 	if (finished) return;
 	CPoint clk = screenToBoard(point);
@@ -163,7 +163,7 @@ void MineBoard::clickDown(CPoint point)
 }
 
 //Comfirm sweeping
-void MineBoard::clickUp(CPoint point)
+void GameClass::clickUp(CPoint point)
 {
 	CPoint up = screenToBoard(point);
 	if (up.x == -1) return;
@@ -207,7 +207,7 @@ void MineBoard::clickUp(CPoint point)
 	sel = CPoint(-1, -1);
 }
 
-void MineBoard::mouseMove(CPoint point)
+void GameClass::mouseMove(CPoint point)
 {
 	/*if (finished) return;
 
@@ -227,7 +227,7 @@ void MineBoard::mouseMove(CPoint point)
 	sel = nPos;*/
 }
 
-void MineBoard::rightClick(CPoint point)
+void GameClass::rightClick(CPoint point)
 {
 	if (finished) {
 		return;
@@ -241,7 +241,7 @@ void MineBoard::rightClick(CPoint point)
 	flagTile(p);
 }
 
-void MineBoard::flagTile(CPoint pos)
+void GameClass::flagTile(CPoint pos)
 {
 	if (getState(pos) == UNKNOWN_TILE) {
 		setState(pos, FLAGGED);
@@ -255,7 +255,7 @@ void MineBoard::flagTile(CPoint pos)
 	}
 }
 
-void MineBoard::openTile(CPoint pos)
+void GameClass::openTile(CPoint pos)
 {
 	if (getState(pos) != UNKNOWN_TILE)
 		return;
@@ -281,7 +281,7 @@ void MineBoard::openTile(CPoint pos)
 
 }
 
-CPoint MineBoard::screenToBoard(CPoint screenPos)
+CPoint GameClass::screenToBoard(CPoint screenPos)
 {
 	if (screenPos.x < pos.x || screenPos.y < pos.y) //Upper left boundary
 		return CPoint(-1, -1);
@@ -300,7 +300,7 @@ CPoint MineBoard::screenToBoard(CPoint screenPos)
 	return ret;
 }
 
-int MineBoard::getState(CPoint pt) const
+int GameClass::getState(CPoint pt) const
 {
 	if (pt.x == -1) {
 		return ERRORTYPE;
@@ -308,12 +308,12 @@ int MineBoard::getState(CPoint pt) const
 	return tiles[pt.y][pt.x].state;
 }
 
-void MineBoard::setState(Tile& tile, int state)
+void GameClass::setState(Tile& tile, int state)
 {
 	setState(tile.pos, state);
 }
 
-void MineBoard::setState(CPoint pt, int state)
+void GameClass::setState(CPoint pt, int state)
 {
 	if (pt.x == -1)
 		return;
@@ -328,13 +328,13 @@ void MineBoard::setState(CPoint pt, int state)
 	}
 }
 
-Tile& MineBoard::getTile(CPoint pt)
+Tile& GameClass::getTile(CPoint pt)
 {
 	// TODO: insert return statement here
 	return tiles[pt.y][pt.x];
 }
 
-void MineBoard::finishGame(bool win)
+void GameClass::finishGame(bool win)
 {
 	if (finished) {
 		return;
@@ -376,7 +376,7 @@ void MineBoard::finishGame(bool win)
 		}
 }
 
-std::vector<Tile*> MineBoard::getNeighbour(
+std::vector<Tile*> GameClass::getNeighbour(
 	CPoint pos //Center pos
 )
 {
@@ -404,7 +404,7 @@ std::vector<Tile*> MineBoard::getNeighbour(
 	return neighbour;
 }
 
-int MineBoard::queryNeighbour(CPoint pos, int state)
+int GameClass::queryNeighbour(CPoint pos, int state)
 {
 	int S = 0;
 	for (auto t : getNeighbour(pos)) {
@@ -413,7 +413,7 @@ int MineBoard::queryNeighbour(CPoint pos, int state)
 	return S;
 }
 
-void MineBoard::restartGame()
+void GameClass::restartGame()
 {
 	sound(NULL);
 
@@ -425,14 +425,14 @@ void MineBoard::restartGame()
 	createBoard();
 }
 
-void MineBoard::startGame(CPoint pos)
+void GameClass::startGame(CPoint pos)
 {
 	started = true;
 	
 	generateBombs(30, pos);
 }
 
-void MineBoard::sound(LPCTSTR src)
+void GameClass::sound(LPCTSTR src)
 {
 	PlaySound(src, NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT);
 }

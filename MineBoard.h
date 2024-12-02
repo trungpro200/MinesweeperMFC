@@ -25,7 +25,7 @@ struct Tile {
 	CPoint pos;
 };
 
-class MineBoard
+class GameClass
 {
 private:
 	//Create and assign tile's position
@@ -56,8 +56,8 @@ public:
 
 	bool onExcavate;
 
-	MineBoard(int size);
-	~MineBoard();
+	GameClass(int size);
+	~GameClass();
 
 	void setPos(int x, int y);
 

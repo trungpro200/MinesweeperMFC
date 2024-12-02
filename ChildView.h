@@ -18,7 +18,7 @@ public:
 
 // Attributes
 public:
-	MineBoard game;
+	GameClass game;
 	Face face;
 	bool holdingL;		//Whether LButton is down or not
 	bool background;	//Whether drew background or not

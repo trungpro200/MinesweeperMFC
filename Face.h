@@ -23,12 +23,12 @@ public:
     FACE currentState;
     bool requireUpdate;
 
-    MineBoard* mb;
+    GameClass* mb;
 
     void setState(FACE state);
 
     //Align the face with the center of the board
-    void setPos(MineBoard* mb);
+    void setPos(GameClass* mb);
     //Draw the face according to Face.pos
     void draw(CPaintDC& dc);
 

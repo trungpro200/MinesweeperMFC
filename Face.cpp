@@ -18,7 +18,7 @@ void Face::setState(FACE state)
 	requireUpdate = true;
 }
 
-void Face::setPos(MineBoard* mb)
+void Face::setPos(GameClass* mb)
 {
 	pos.x = (mb->width / 2) + mb->pos.x - (spriteWidth / 2);
 	this->mb = mb;
