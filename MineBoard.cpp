@@ -36,32 +36,32 @@ void GameClass::drawTile(CPaintDC& dc, int STATE, int x, int y)
 
 	tp.requireUpdate = false;
 	Sprite* sprite;
-	CPoint origin(x * spriteSheet.spriteWidth + pos.x, y * spriteSheet.spriteHeight + pos.y);
+	CPoint origin(x * tilestates.spriteWidth + pos.x, y * tilestates.spriteHeight + pos.y);
 
 	switch (STATE) {
 	case UNKNOWN_TILE:
-		sprite = spriteSheet.getSprite(0, 0);
+		sprite = tilestates.getSprite(0, 0);
 		break;
 	case SELECTED_TILE:
-		sprite = spriteSheet.getSprite(1, 0);
+		sprite = tilestates.getSprite(1, 0);
 		break;
 	case NOBOMB_TILE:
-		sprite = spriteSheet.getSprite(1, 0);
+		sprite = tilestates.getSprite(1, 0);
 		break;
 	case FLAGGED:
-		sprite = spriteSheet.getSprite(2, 0);
+		sprite = tilestates.getSprite(2, 0);
 		break;
 	case EXPLODED_TILE:
-		sprite = spriteSheet.getSprite(6, 0);
+		sprite = tilestates.getSprite(6, 0);
 		break;
 	case BOMB_TILE:
-		sprite = spriteSheet.getSprite(5, 0);
+		sprite = tilestates.getSprite(5, 0);
 		break;
 	case WRONG_FLAG:
-		sprite = spriteSheet.getSprite(7, 0);
+		sprite = tilestates.getSprite(7, 0);
 		break;
 	default:
-		sprite = spriteSheet.getSprite(STATE-1, 1);
+		sprite = tilestates.getSprite(STATE-1, 1);
 		break;
 	}
 
@@ -82,10 +82,10 @@ GameClass::GameClass(int size)
 	//shouldn't be default
 	tiles = nullptr;
 	this->size = size;
-	spriteSheet.setSize(24, 24);
+	tilestates.setSize(24, 24);
 
-	width = spriteSheet.spriteWidth * size;
-	height = spriteSheet.spriteHeight * size;
+	width = tilestates.spriteWidth * size;
+	height = tilestates.spriteHeight * size;
 
 	createBoard();
 }
@@ -288,8 +288,8 @@ CPoint GameClass::screenToBoard(CPoint screenPos)
 
 	CPoint ret;
 
-	ret.x = (screenPos.x-pos.x) / spriteSheet.spriteWidth;
-	ret.y = (screenPos.y-pos.y) / spriteSheet.spriteHeight;
+	ret.x = (screenPos.x-pos.x) / tilestates.spriteWidth;
+	ret.y = (screenPos.y-pos.y) / tilestates.spriteHeight;
 
 	if (ret.x >= size || ret.y >=size) { //Lower right boundary
 		return CPoint(-1, -1);

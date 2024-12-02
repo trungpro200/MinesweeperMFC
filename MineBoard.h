@@ -34,7 +34,7 @@ private:
 	void deleteBoard();
 	void drawTile(CPaintDC& dc, int STATE, int x, int y);
 public:
-	SpritesSheet spriteSheet;
+	SpritesSheet tilestates;
 	
 	int size; //Size of the game eg: 16x16
 	Tile** tiles;
@@ -52,7 +52,7 @@ public:
 	//Init
 	bool finished;//Gamestate
 	bool started;//Whether the game started or not
-	bool win;//Skill issues
+	bool win;//Whether you have skill issues or not
 
 	bool onExcavate;
 
@@ -62,11 +62,6 @@ public:
 	void setPos(int x, int y);
 
 	void generateBombs(int count, CPoint bl);
-
-	//Calculate the number of bomb surround a tile at pos
-	//Also assign the pos of the tile
-	//void calcGradient(CPoint pos);
-
 	void draw(CPaintDC& dc);
 
 	//Mouse util
