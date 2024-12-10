@@ -18,6 +18,8 @@ CChildView::CChildView() : game(16)
 	game.setPos(10, 36);
 	face.setPos(&game);
 
+	game.bomb = 30;
+
 	holdingL = false;
 	background = false;
 }

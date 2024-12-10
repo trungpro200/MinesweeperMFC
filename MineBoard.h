@@ -1,11 +1,13 @@
 #pragma once
+
+#include "Score.h"
 #include "SpritesSheet.h"
 #include <algorithm>
 #include <atltypes.h>
 #include <vector>
-#include<mmsystem.h>
-#pragma comment(lib, "Winmm.lib")
+#include <mmsystem.h>
 
+#pragma comment(lib, "Winmm.lib")
 
 #define NOBOMB_TILE 0
 #define UNKNOWN_TILE -1
@@ -28,7 +30,7 @@ struct Tile {
 class GameClass
 {
 private:
-	//Create and assign tile's position
+	//Allocate and assign tile's position
 	void createBoard();
 	//Used to free up memory
 	void deleteBoard();
@@ -42,6 +44,8 @@ public:
 	CPoint pos;
 	CPoint sel; //current selected tile
 
+	Score bombLeft;
+	
 	//Board sizes
 	int width; //width of the board in pixel
 	int height;//height of the board in pixel

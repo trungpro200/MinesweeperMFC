@@ -75,7 +75,7 @@ GameClass::GameClass(int size)
 	//Default stuffs
 	started = false;
 	finished = false;
-	bomb = 1;
+	bomb = 0;
 	tileLeft = size * size;
 	onExcavate = false;
 
@@ -86,6 +86,8 @@ GameClass::GameClass(int size)
 
 	width = tilestates.spriteWidth * size;
 	height = tilestates.spriteHeight * size;
+
+	
 
 	createBoard();
 }
@@ -99,6 +101,10 @@ void GameClass::setPos(int x, int y)
 {
 	pos.x = x;
 	pos.y = y;
+
+	bombLeft.pos.x = pos.x + width - bombLeft.spriteWidth * 3;
+	bombLeft.pos.y = 10;
+	bombLeft.score = bomb;
 }
 
 
@@ -142,6 +148,8 @@ void GameClass::draw(CPaintDC& dc)
 		}
 		//TRACE("\n");
 	}
+
+	bombLeft.draw(dc);
 }
 
 //Select only
@@ -246,11 +254,13 @@ void GameClass::flagTile(CPoint pos)
 	if (getState(pos) == UNKNOWN_TILE) {
 		setState(pos, FLAGGED);
 		sound(L"res/flag.wav");
+		bombLeft.score--;
 		return;
 	}
 	if (getState(pos) == FLAGGED) {
 		setState(pos, UNKNOWN_TILE);
 		sound(L"res/unflag.wav");
+		bombLeft.score++;
 		return;
 	}
 }
@@ -344,6 +354,7 @@ void GameClass::finishGame(bool win)
 
 	if (win) {
 		sound(L"res/win.wav");
+		bombLeft.score = 0;
 	}
 	else
 	{
@@ -419,7 +430,6 @@ void GameClass::restartGame()
 
 	started = false;
 	finished = false;
-	bomb = 0;
 	tileLeft = size * size;
 
 	createBoard();
@@ -428,8 +438,8 @@ void GameClass::restartGame()
 void GameClass::startGame(CPoint pos)
 {
 	started = true;
-	
-	generateBombs(30, pos);
+	bombLeft.score = bomb;
+	generateBombs(bomb, pos);
 }
 
 void GameClass::sound(LPCTSTR src)

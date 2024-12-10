@@ -4,7 +4,8 @@
 #pragma once
 #include "MineBoard.h"
 #include "Face.h"
-#include<mmsystem.h>
+#include <mmsystem.h>
+#include "Score.h"
 #pragma comment(lib, "Winmm.lib")
 
 
@@ -20,6 +21,7 @@ public:
 public:
 	GameClass game;
 	Face face;
+
 	bool holdingL;		//Whether LButton is down or not
 	bool background;	//Whether drew background or not
 // Operations

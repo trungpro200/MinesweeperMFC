@@ -10,7 +10,7 @@ Sprite::Sprite(LPCTSTR src)
 Sprite::Sprite(CImage image)
 {
 	/*this->image = image;*/
-	CImage::CImage(image);
+	//CImage(image);
 }
 
 Sprite::Sprite()
