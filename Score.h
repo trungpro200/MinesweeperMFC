@@ -12,5 +12,9 @@ public:
     int score;
 
     void draw(CPaintDC& dc);
+    void draw(CClientDC& dc);
+
+    void rightAlign(CPoint origin, CPoint dim);
+    void leftAlign(CPoint origin, CPoint dim);
 };
 

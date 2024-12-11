@@ -22,6 +22,8 @@ CChildView::CChildView() : game(16)
 
 	holdingL = false;
 	background = false;
+
+	timer_id = 0;
 }
 
 CChildView::~CChildView()
@@ -36,6 +38,8 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_MOUSEMOVE()
 	//ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
+	ON_WM_TIMER()
+	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 
@@ -158,4 +162,31 @@ void CChildView::OnRButtonUp(UINT nFlags, CPoint point)
 	Invalidate(0);
 
 	CWnd::OnRButtonUp(nFlags, point);
+}
+
+
+void CChildView::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: Add your message handler code here and/or call default
+	CClientDC cdc(this);
+
+	game.timePassed.draw(cdc);
+	if (game.started && !game.finished) {
+		game.timePassed.score++;
+	}
+
+	CWnd::OnTimer(nIDEvent);
+}
+
+
+int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CWnd::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  Add your specialized creation code here
+	//game.timePassed.draw(CClientDC(this));
+	timer_id = SetTimer(1, 1000, NULL);
+
+	return 0;
 }

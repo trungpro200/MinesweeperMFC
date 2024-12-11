@@ -24,6 +24,8 @@ public:
 
 	bool holdingL;		//Whether LButton is down or not
 	bool background;	//Whether drew background or not
+
+	UINT_PTR timer_id;
 // Operations
 public:
 
@@ -45,5 +47,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 //	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 

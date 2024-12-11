@@ -19,9 +19,6 @@ Sprite::Sprite()
 
 void Sprite::blit(CPaintDC& dc, int x, int y)
 {
-	static int a = 0;
-
-	a++;
 	CDC* img = CDC::FromHandle(CImage::GetDC());
 
 	dc.BitBlt(x, y, CImage::GetWidth(), CImage::GetHeight(), img, 0, 0, SRCCOPY);
@@ -29,4 +26,13 @@ void Sprite::blit(CPaintDC& dc, int x, int y)
 	CImage::ReleaseDC();
 
 	//TRACE("Tile updated: %i\n", a);
+}
+
+void Sprite::blit(CClientDC& dc, int x, int y)
+{
+	CDC* img = CDC::FromHandle(CImage::GetDC());
+
+	dc.BitBlt(x, y, CImage::GetWidth(), CImage::GetHeight(), img, 0, 0, SRCCOPY);
+
+	CImage::ReleaseDC();
 }

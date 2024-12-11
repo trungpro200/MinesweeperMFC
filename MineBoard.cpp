@@ -87,8 +87,6 @@ GameClass::GameClass(int size)
 	width = tilestates.spriteWidth * size;
 	height = tilestates.spriteHeight * size;
 
-	
-
 	createBoard();
 }
 
@@ -102,9 +100,8 @@ void GameClass::setPos(int x, int y)
 	pos.x = x;
 	pos.y = y;
 
-	bombLeft.pos.x = pos.x + width - bombLeft.spriteWidth * 3;
-	bombLeft.pos.y = 10;
-	bombLeft.score = bomb;
+	bombLeft.rightAlign(pos, CPoint(width, height));
+	timePassed.leftAlign(pos, CPoint(0, 0));
 }
 
 
@@ -113,6 +110,7 @@ void GameClass::generateBombs(int count, CPoint bl)
 	static int a = 0;
 	srand(time(NULL) + a); //Seeding for randomization
 	bomb = count; 
+	bombLeft.score = bomb;
 
 	int i = 0;
 	CPoint ran;
@@ -150,6 +148,7 @@ void GameClass::draw(CPaintDC& dc)
 	}
 
 	bombLeft.draw(dc);
+	//timePassed.draw(dc);
 }
 
 //Select only
@@ -431,6 +430,9 @@ void GameClass::restartGame()
 	started = false;
 	finished = false;
 	tileLeft = size * size;
+
+	bombLeft.score = bomb;
+	timePassed.score = 0;
 
 	createBoard();
 }

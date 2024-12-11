@@ -9,5 +9,6 @@ public:
 	Sprite();
 
 	void blit(CPaintDC& dc, int x, int y);
+	void blit(CClientDC& dc, int x, int y);
 };
 

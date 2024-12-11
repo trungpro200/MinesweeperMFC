@@ -45,6 +45,7 @@ public:
 	CPoint sel; //current selected tile
 
 	Score bombLeft;
+	Score timePassed;
 	
 	//Board sizes
 	int width; //width of the board in pixel
