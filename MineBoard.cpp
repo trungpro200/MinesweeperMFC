@@ -139,6 +139,7 @@ void GameClass::generateBombs(int count, CPoint bl)
 
 void GameClass::draw(CPaintDC& dc)
 {
+	static bool firstDraw = true;
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			drawTile(dc, tiles[i][j].state, j, i);
@@ -149,6 +150,11 @@ void GameClass::draw(CPaintDC& dc)
 
 	bombLeft.draw(dc);
 	//timePassed.draw(dc);
+
+	if (firstDraw) {
+		timePassed.draw(dc);
+		firstDraw = false;
+	}
 }
 
 //Select only
